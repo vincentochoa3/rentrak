@@ -1,0 +1,115 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User/Landlord model
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String?
+  firstName String
+  lastName  String
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  properties Property[]
+  // All payments from tenants across all properties
+  payments   Payment[] @relation("UserPayments")
+
+  @@map("users")
+}
+
+// Property model
+model Property {
+  id          String   @id @default(cuid())
+  name        String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  landlordId String
+  landlord   User @relation(fields: [landlordId], references: [id])
+  tenants    Tenant[]
+
+  @@map("properties")
+}
+
+// Tenant model
+model Tenant {
+  id          String   @id @default(cuid())
+  firstName   String
+  lastName    String
+  phone       String?
+  monthlyRent Decimal  @db.Decimal(10, 2)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+  payments   Payment[]
+  paymentHistory PaymentHistory[]
+
+  @@map("tenants")
+}
+
+// Monthly Payment model - one per tenant per month
+model Payment {
+  id          String        @id @default(cuid())
+  month       String        // Format: "2024-01"
+  amount      Decimal       @db.Decimal(10, 2)  // Total amount due for the month
+  paidAmount  Decimal       @default(0) @db.Decimal(10, 2)  // Amount actually paid
+  dueDate     DateTime
+  status      PaymentStatus @default(PENDING)
+  notes       String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Relations
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id])
+  // Add relation to User through tenant's property
+  userId   String
+  user     User   @relation("UserPayments", fields: [userId], references: [id])
+
+  // Ensure one payment per tenant per month
+  @@unique([tenantId, month])
+  @@map("payments")
+}
+
+// Payment History model - tracks individual payment transactions
+model PaymentHistory {
+  id          String   @id @default(cuid())
+  amount      Decimal  @db.Decimal(10, 2)  // Amount of this specific payment
+  paidDate    DateTime
+  month       String   // Format: "2024-01"
+  year        Int      // 2024
+  notes       String?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id])
+
+  @@map("payment_history")
+}
+
+// Payment status enum
+enum PaymentStatus {
+  PENDING
+  PAID
+  PARTIAL
+  OVERDUE
+}
