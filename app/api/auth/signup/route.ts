@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { prisma } from "@/app/lib/db";
+import { prisma } from "@/lib/db";
 
 export async function POST(request: Request) {
   try {
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     if (!email?.trim() || !password?.trim()) {
       return NextResponse.json(
         { error: "Email and password are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     const existing = await prisma.user.findUnique({
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     if (existing) {
       return NextResponse.json(
         { error: "An account with this email already exists" },
-        { status: 409 }
+        { status: 409 },
       );
     }
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     console.error("Signup error:", e);
     return NextResponse.json(
       { error: "Something went wrong" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

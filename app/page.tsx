@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { AuthStatus } from "./components/auth-status";
+import { AuthStatus } from "../components/auth-status";
 
 export default function Home() {
   return (

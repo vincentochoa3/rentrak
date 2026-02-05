@@ -3,7 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google";
 import bcrypt from "bcryptjs";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { prisma } from "./db";
+import { prisma } from "@/lib/db";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -63,7 +63,8 @@ export const authOptions: NextAuthOptions = {
     },
     session({ session, token }) {
       if (session.user) {
-        (session.user as typeof session.user & { id: string }).id = token.sub ?? token.id ?? "";
+        (session.user as typeof session.user & { id: string }).id =
+          token.sub ?? token.id ?? "";
       }
       return session;
     },
