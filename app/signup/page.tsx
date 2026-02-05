@@ -105,7 +105,7 @@ export default function Signup() {
           </label>
           <button
             type="submit"
-            className="w-full py-2.5 rounded-lg bg-primary font-medium hover:opacity-90 transition-opacity"
+            className="w-full py-2.5 rounded-full bg-primary font-medium hover:opacity-90 transition-opacity"
           >
             Create account
           </button>
@@ -122,7 +122,7 @@ export default function Signup() {
         <button
           type="button"
           onClick={handleGoogleSignup}
-          className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-lg border border-black/10 dark:border-white/15 bg-transparent font-medium hover:bg-foreground/5 transition-colors"
+          className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-xl border border-black/10 dark:border-white/15 bg-transparent font-medium hover:bg-foreground/5 transition-colors"
         >
           <GoogleIcon className="w-5 h-5" />
           Sign up with Google

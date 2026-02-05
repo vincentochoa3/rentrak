@@ -70,7 +70,7 @@ export default function Login() {
           </label>
           <button
             type="submit"
-            className="w-full py-2.5 rounded-lg bg-primary font-medium hover:opacity-90 transition-opacity"
+            className="w-full rounded-full py-2.5 bg-primary font-medium hover:opacity-90 transition-opacity"
           >
             Login
           </button>
@@ -87,7 +87,7 @@ export default function Login() {
         <button
           type="button"
           onClick={handleGoogleLogin}
-          className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-lg border border-black/10 dark:border-white/15 bg-transparent font-medium hover:bg-foreground/5 transition-colors"
+          className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-xl border border-black/10 dark:border-white/15 bg-transparent font-medium hover:bg-foreground/5 transition-colors"
         >
           <GoogleIcon className="w-5 h-5" />
           Login with Google
