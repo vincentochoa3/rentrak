@@ -30,9 +30,7 @@ export default function Login() {
       </Link>
 
       <div className="w-full max-w-[380px]">
-        <h1 className="text-2xl font-semibold text-center mb-1">
-          Welcome back
-        </h1>
+        <h1 className="text-2xl font-medium text-center mb-1">Welcome back</h1>
         <p className="text-foreground/70 text-center text-sm mb-8">
           Sign in to your account
         </p>

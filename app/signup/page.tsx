@@ -32,7 +32,7 @@ export default function Signup() {
       </Link>
 
       <div className="w-full max-w-[380px]">
-        <h1 className="text-2xl font-semibold text-center mb-1">
+        <h1 className="text-2xl font-medium text-center mb-1">
           Create an account
         </h1>
         <p className="text-foreground/70 text-center text-sm mb-8">
