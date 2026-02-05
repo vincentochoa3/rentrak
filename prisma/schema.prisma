@@ -7,109 +7,72 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider  = "postgres"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
-// User/Landlord model
+// Landlord – main logged-in application user
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
-  password  String?
+  password  String
   firstName String
   lastName  String
-  phone     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relations
   properties Property[]
-  // All payments from tenants across all properties
-  payments   Payment[] @relation("UserPayments")
 
   @@map("users")
 }
 
-// Property model
+// Real-estate property – belongs to one User, has many Tenants
 model Property {
-  id          String   @id @default(cuid())
-  name        String
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid())
+  name      String   // unique per landlord
+  address   String
+  city      String
+  state     String
+  zip       String
+  country   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  // Relations
   landlordId String
-  landlord   User @relation(fields: [landlordId], references: [id])
+  landlord   User     @relation(fields: [landlordId], references: [id], onDelete: Cascade)
   tenants    Tenant[]
 
+  @@unique([landlordId, name])
   @@map("properties")
 }
 
-// Tenant model
+// Tenant – lives at one Property; rentAmount added to amountOwed on the 1st of each month
 model Tenant {
   id          String   @id @default(cuid())
   firstName   String
   lastName    String
-  phone       String?
-  monthlyRent Decimal  @db.Decimal(10, 2)
+  rentAmount  Decimal  @db.Decimal(10, 2)  // added to amountOwed on 1st of month
+  amountOwed  Decimal  @default(0) @db.Decimal(10, 2)  // updated when payments are submitted
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  // Relations
   propertyId String
-  property   Property @relation(fields: [propertyId], references: [id])
+  property   Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   payments   Payment[]
-  paymentHistory PaymentHistory[]
 
   @@map("tenants")
 }
 
-// Monthly Payment model - one per tenant per month
+// Record of a payment – subtracting from Tenant.amountOwed
 model Payment {
-  id          String        @id @default(cuid())
-  month       String        // Format: "2024-01"
-  amount      Decimal       @db.Decimal(10, 2)  // Total amount due for the month
-  paidAmount  Decimal       @default(0) @db.Decimal(10, 2)  // Amount actually paid
-  dueDate     DateTime
-  status      PaymentStatus @default(PENDING)
-  notes       String?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id        String   @id @default(cuid())
+  amount    Decimal  @db.Decimal(10, 2)
+  paidAt    DateTime @default(now())
+  createdAt DateTime @default(now())
 
-  // Relations
   tenantId String
-  tenant   Tenant @relation(fields: [tenantId], references: [id])
-  // Add relation to User through tenant's property
-  userId   String
-  user     User   @relation("UserPayments", fields: [userId], references: [id])
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
-  // Ensure one payment per tenant per month
-  @@unique([tenantId, month])
   @@map("payments")
-}
-
-// Payment History model - tracks individual payment transactions
-model PaymentHistory {
-  id          String   @id @default(cuid())
-  amount      Decimal  @db.Decimal(10, 2)  // Amount of this specific payment
-  paidDate    DateTime
-  month       String   // Format: "2024-01"
-  year        Int      // 2024
-  notes       String?
-  createdAt   DateTime @default(now())
-
-  // Relations
-  tenantId String
-  tenant   Tenant @relation(fields: [tenantId], references: [id])
-
-  @@map("payment_history")
-}
-
-// Payment status enum
-enum PaymentStatus {
-  PENDING
-  PAID
-  PARTIAL
-  OVERDUE
 }
