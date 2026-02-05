@@ -1,24 +1,41 @@
 "use client";
 
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-
-function handleGoogleSignup() {
-  // TODO: implement Google sign-up (e.g. NextAuth with Google provider)
-  console.log("Sign up with Google");
-}
 
 export default function Signup() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
-  function handleSignup(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // TODO: implement signup (e.g. NextAuth, custom API + hash password)
-    console.log("Signup", { firstName, lastName, email, password });
+    setError(null);
+    const res = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, firstName, lastName }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setError(data.error ?? "Something went wrong");
+      return;
+    }
+    const signInRes = await signIn("credentials", {
+      email,
+      password,
+      callbackUrl: "/",
+      redirect: false,
+    });
+    if (signInRes?.ok && signInRes?.url) window.location.href = signInRes.url;
+  }
+
+  function handleGoogleSignup() {
+    signIn("google", { callbackUrl: "/" });
   }
 
   return (
@@ -40,6 +57,11 @@ export default function Signup() {
         </p>
 
         <form onSubmit={handleSignup} className="flex flex-col gap-4">
+          {error && (
+            <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 px-3 py-2 rounded-lg">
+              {error}
+            </p>
+          )}
           <div className="grid grid-cols-2 gap-4">
             <label className="flex flex-col gap-1.5">
               <span className="text-sm font-medium text-foreground/90">

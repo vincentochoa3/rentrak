@@ -1,22 +1,33 @@
 "use client";
 
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-
-function handleGoogleLogin() {
-  // TODO: implement Google sign-in (e.g. NextAuth with Google provider)
-  console.log("Login with Google");
-}
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
-  function handleLogin(e: React.FormEvent<HTMLFormElement>) {
+  async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // TODO: implement login (e.g. NextAuth, custom API)
-    console.log("Login", { email, password });
+    setError(null);
+    const res = await signIn("credentials", {
+      email,
+      password,
+      callbackUrl: "/",
+      redirect: false,
+    });
+    if (res?.error) {
+      setError("Invalid email or password");
+      return;
+    }
+    if (res?.ok && res?.url) window.location.href = res.url;
+  }
+
+  function handleGoogleLogin() {
+    signIn("google", { callbackUrl: "/" });
   }
 
   return (
@@ -36,6 +47,11 @@ export default function Login() {
         </p>
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
+          {error && (
+            <p className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 px-3 py-2 rounded-lg">
+              {error}
+            </p>
+          )}
           <label className="flex flex-col gap-1.5">
             <span className="text-sm font-medium text-foreground/90">
               Email

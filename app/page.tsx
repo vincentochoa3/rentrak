@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { AuthStatus } from "./components/auth-status";
 
 export default function Home() {
   return (
@@ -17,23 +18,10 @@ export default function Home() {
             A simple solution for landlords to manage their tenant rent
             payments.
           </p>
-          <p> See who's due, who owes, and who's paid.</p>
+          <p> See who&apos;s due, who owes, and who&apos;s paid.</p>
         </div>
 
-        <div className="w-full flex gap-4 items-center flex-col">
-          <a
-            className="w-full rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-primary gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium py-2.5"
-            href="/login"
-          >
-            Login
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium py-2.5 w-full"
-            href="/signup"
-          >
-            Sign up
-          </a>
-        </div>
+        <AuthStatus />
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         <a
