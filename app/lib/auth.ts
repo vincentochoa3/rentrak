@@ -7,7 +7,7 @@ import { prisma } from "./db";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "database", maxAge: 30 * 24 * 60 * 60 },
+  session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60 },
   pages: { signIn: "/login" },
   providers: [
     Credentials({
@@ -57,10 +57,13 @@ export const authOptions: NextAuthOptions = {
       }
       return true;
     },
-    session({ session, user }) {
+    jwt({ token, user }) {
+      if (user?.id) token.id = user.id;
+      return token;
+    },
+    session({ session, token }) {
       if (session.user) {
-        // Extend the session user object to include 'id'
-        (session.user as typeof session.user & { id: string }).id = user.id;
+        (session.user as typeof session.user & { id: string }).id = token.sub ?? token.id ?? "";
       }
       return session;
     },
