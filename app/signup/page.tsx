@@ -28,14 +28,14 @@ export default function Signup() {
     const signInRes = await signIn("credentials", {
       email,
       password,
-      callbackUrl: "/",
+      callbackUrl: "/dashboard",
       redirect: false,
     });
     if (signInRes?.ok && signInRes?.url) window.location.href = signInRes.url;
   }
 
   function handleGoogleSignup() {
-    signIn("google", { callbackUrl: "/" });
+    signIn("google", { callbackUrl: "/dashboard" });
   }
 
   return (

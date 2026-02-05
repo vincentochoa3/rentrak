@@ -16,7 +16,7 @@ export default function Login() {
     const res = await signIn("credentials", {
       email,
       password,
-      callbackUrl: "/",
+      callbackUrl: "/dashboard",
       redirect: false,
     });
     if (res?.error) {
@@ -27,7 +27,7 @@ export default function Login() {
   }
 
   function handleGoogleLogin() {
-    signIn("google", { callbackUrl: "/" });
+    signIn("google", { callbackUrl: "/dashboard" });
   }
 
   return (
