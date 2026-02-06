@@ -15,7 +15,7 @@ export default async function NavigationHeader() {
           href="/"
           className="flex items-center gap-2 text-foreground/80 hover:text-foreground"
         >
-          <Image src="/rentrak-logo.svg" alt="Rentrak" width={28} height={28} />
+          <Image src="/rentrak-logo.svg" alt="Rentrak" width={32} height={32} />
           <span className="text-lg font-medium">rentrak</span>
         </Link>
         <SignoutButton />

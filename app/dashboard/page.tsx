@@ -3,7 +3,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/auth";
 import { redirect } from "next/navigation";
 import { getUser } from "@/prisma/user/query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBuilding, faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { faCirclePlus, faFolderOpen } from "@fortawesome/free-solid-svg-icons";
 import AddPropertyModal from "./AddPropertyModal";
 
 export default async function DashboardPage() {
@@ -30,20 +30,21 @@ export default async function DashboardPage() {
         ) : (
           <div className="flex flex-1 flex-col gap-2 items-center justify-center">
             <FontAwesomeIcon
-              icon={faBuilding}
-              className="text-foreground/70 w-12 h-12 mb-2"
+              icon={faFolderOpen}
+              className="text-foreground/70 mb-2"
+              size="4x"
             />
             <p className="text-center text-foreground/70">
               No properties found
             </p>
-            <p className="text-center text-foreground/70 flex items-center gap-3">
-              Get started by clicking the
-              <span>
+            <p className="text-center text-foreground/70">
+              Get started using the{" "}
+              <span className="inline-flex align-middle">
                 <FontAwesomeIcon
                   icon={faCirclePlus}
-                  className="text-foreground/70 w-4 h-4"
+                  className="text-foreground/70"
                 />
-              </span>
+              </span>{" "}
               icon above.
             </p>
           </div>
