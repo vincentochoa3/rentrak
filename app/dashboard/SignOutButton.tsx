@@ -2,7 +2,7 @@
 
 import { signOut } from "next-auth/react";
 
-export default function DashboardAuthStatus() {
+export default function SignoutButton() {
   return (
     <button
       type="button"
