@@ -10,7 +10,7 @@ export default async function NavigationHeader() {
 
   if (session) {
     return (
-      <header className="flex items-center justify-between bg-slate-800 p-4 fixed top-0 z-10">
+      <header className="flex items-center justify-between bg-slate-800 w-full p-4 sticky top-0 z-10">
         <Link
           href="/"
           className="flex items-center gap-2 text-foreground/80 hover:text-foreground"

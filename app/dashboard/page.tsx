@@ -22,10 +22,16 @@ export default async function DashboardPage() {
   return (
     <div className="flex flex-1 flex-col p-6 sm:p-8">
       <main className="flex-1 flex flex-col gap-6">
-        <h1 className="text-2xl font-medium">Dashboard</h1>
-        <p className="text-center text-foreground/70">
-          Welcome back, {displayName}. This is your protected dashboard.
-        </p>
+        <h1 className="text-2xl font-medium">Properties</h1>
+        {user.properties.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {user.properties.map((property) => (
+              <div key={property.id}>{property.name}</div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-foreground/70">No properties found</p>
+        )}
       </main>
     </div>
   );
