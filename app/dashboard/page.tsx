@@ -9,6 +9,7 @@ import {
   faFolderOpen,
 } from "@fortawesome/free-solid-svg-icons";
 import AddPropertyModal from "./AddPropertyModal";
+import Link from "next/link";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -28,27 +29,32 @@ export default async function DashboardPage() {
         {user.properties.length > 0 ? (
           <div className="flex flex-col">
             {user.properties.map((property, index) => (
-              <div
+              <Link
+                href={`/properties/${property.id}/tenants`}
                 key={property.id}
-                className={`w-full flex items-center justify-between px-6 py-5 hover:bg-foreground/5 transition-colors border-black/10 dark:border-white/15 ${index === user.properties.length - 1 ? "" : "border-b"}`}
               >
-                <div>
-                  <p className="font-medium">{property.name}</p>
-                  <p className="text-foreground/70 text-sm">
-                    {property.tenants.length} tenant
-                    {property.tenants.length === 1 ? "" : "s"}
-                  </p>
+                <div
+                  key={property.id}
+                  className={`w-full flex items-center justify-between px-6 py-5 hover:bg-foreground/5 transition-colors border-black/10 dark:border-white/15 ${index === user.properties.length - 1 ? "" : "border-b"}`}
+                >
+                  <div>
+                    <p className="font-medium">{property.name}</p>
+                    <p className="text-foreground/70 text-sm">
+                      {property.tenants.length} tenant
+                      {property.tenants.length === 1 ? "" : "s"}
+                    </p>
+                  </div>
+                  <FontAwesomeIcon
+                    icon={faChevronRight}
+                    className="text-foreground/70"
+                    size="lg"
+                  />
                 </div>
-                <FontAwesomeIcon
-                  icon={faChevronRight}
-                  className="text-foreground/70"
-                  size="lg"
-                />
-              </div>
+              </Link>
             ))}
           </div>
         ) : (
-          <div className="flex flex-1 flex-col gap-2 items-center justify-center">
+          <div className="flex flex-1 flex-col gap-2 items-center justify-center p-6">
             <FontAwesomeIcon
               icon={faFolderOpen}
               className="text-foreground/70 mb-2"
