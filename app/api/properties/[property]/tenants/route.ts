@@ -11,7 +11,7 @@ type TenantInput = {
 
 export async function POST(
   request: Request,
-  context: { params: Promise<{ property: string }> }
+  context: { params: Promise<{ property: string }> },
 ) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
@@ -30,7 +30,7 @@ export async function POST(
     if (!property) {
       return NextResponse.json(
         { error: "Property not found or access denied" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -40,7 +40,7 @@ export async function POST(
     if (!Array.isArray(tenantsInput) || tenantsInput.length === 0) {
       return NextResponse.json(
         { error: "Request body must include a non-empty 'tenants' array" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -49,11 +49,11 @@ export async function POST(
       const lastName = t?.lastName?.trim();
       const rentAmount = t?.rentAmount;
       if (!firstName || !lastName) {
-        throw new Error(`Tenant at index ${i}: firstName and lastName are required`);
+        throw new Error(`Tenant ${i + 1} is missing first name or last name.`);
       }
       const num = Number(rentAmount);
       if (rentAmount == null || Number.isNaN(num) || num < 0) {
-        throw new Error(`Tenant at index ${i}: rentAmount must be a non-negative number`);
+        throw new Error(`Tenant ${i + 1} has an invalid rent amount.`);
       }
       return {
         firstName,
@@ -71,19 +71,19 @@ export async function POST(
             rentAmount: t.rentAmount,
             propertyId,
           },
-        })
-      )
+        }),
+      ),
     );
 
     return NextResponse.json(created, { status: 201 });
   } catch (e) {
-    if (e instanceof Error && e.message.startsWith("Tenant at index")) {
+    if (e instanceof Error && e.message.startsWith("Tenant")) {
       return NextResponse.json({ error: e.message }, { status: 400 });
     }
     console.error("Add tenants error:", e);
     return NextResponse.json(
       { error: "Something went wrong" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

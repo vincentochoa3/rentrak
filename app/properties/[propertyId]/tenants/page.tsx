@@ -7,6 +7,7 @@ import {
   faCirclePlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { faFolderOpen } from "@fortawesome/free-regular-svg-icons";
+import AddTenantModal from "./AddTenantModal";
 
 export default async function PropertyTenantsPage({
   params,
@@ -21,12 +22,13 @@ export default async function PropertyTenantsPage({
       <main className="flex-1 flex flex-col gap-2">
         <div className="flex items-center justify-between p-4">
           <h1 className="text-2xl font-medium">{property.name} Tenants</h1>
+          <AddTenantModal propertyId={propertyId} />
         </div>
         {property.tenants.length > 0 ? (
           <div className="flex flex-col">
             {property.tenants.map((tenant, index) => (
               <div
-                key={property.id}
+                key={tenant.id}
                 className={`w-full flex items-center justify-between px-6 py-5 hover:bg-foreground/5 transition-colors border-black/10 dark:border-white/15 ${index === property.tenants.length - 1 ? "" : "border-b"}`}
               >
                 <div>
