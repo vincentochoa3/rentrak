@@ -3,7 +3,11 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/auth";
 import { redirect } from "next/navigation";
 import { getUser } from "@/prisma/user/query";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCirclePlus, faFolderOpen } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronRight,
+  faCirclePlus,
+  faFolderOpen,
+} from "@fortawesome/free-solid-svg-icons";
 import AddPropertyModal from "./AddPropertyModal";
 
 export default async function DashboardPage() {
@@ -15,16 +19,32 @@ export default async function DashboardPage() {
   if (!user) redirect("/login");
 
   return (
-    <div className="flex flex-1 flex-col p-6 sm:p-8">
-      <main className="flex-1 flex flex-col gap-6">
-        <div className="flex items-center justify-between">
+    <div className="flex flex-1 flex-col sm:p-8 max-w-6xl mx-auto w-full">
+      <main className="flex-1 flex flex-col gap-2">
+        <div className="flex items-center justify-between p-4">
           <h1 className="text-2xl font-medium">Properties</h1>
           <AddPropertyModal />
         </div>
         {user.properties.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {user.properties.map((property) => (
-              <div key={property.id}>{property.name}</div>
+          <div className="flex flex-col">
+            {user.properties.map((property, index) => (
+              <div
+                key={property.id}
+                className={`w-full flex items-center justify-between px-6 py-5 hover:bg-foreground/5 transition-colors border-black/10 dark:border-white/15 ${index === user.properties.length - 1 ? "" : "border-b"}`}
+              >
+                <div>
+                  <p className="font-medium">{property.name}</p>
+                  <p className="text-foreground/70 text-sm">
+                    {property.tenants.length} tenant
+                    {property.tenants.length === 1 ? "" : "s"}
+                  </p>
+                </div>
+                <FontAwesomeIcon
+                  icon={faChevronRight}
+                  className="text-foreground/70"
+                  size="lg"
+                />
+              </div>
             ))}
           </div>
         ) : (
