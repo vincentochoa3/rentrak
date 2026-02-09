@@ -21,10 +21,17 @@ export async function POST(request: Request) {
     };
 
     const trimmedName = name?.trim();
-    if (!trimmedName || !address?.trim() || !city?.trim() || !state?.trim() || !zip?.trim() || !country?.trim()) {
+    if (
+      !trimmedName ||
+      !address?.trim() ||
+      !city?.trim() ||
+      !state?.trim() ||
+      !zip?.trim() ||
+      !country?.trim()
+    ) {
       return NextResponse.json(
         { error: "Name, address, city, state, zip, and country are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -36,7 +43,7 @@ export async function POST(request: Request) {
     if (existing) {
       return NextResponse.json(
         { error: "You already have a property with this name" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -57,7 +64,7 @@ export async function POST(request: Request) {
     console.error("Create property error:", e);
     return NextResponse.json(
       { error: "Something went wrong" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
