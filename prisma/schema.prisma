@@ -90,6 +90,7 @@ model Tenant {
   lastName    String
   rentAmount  Decimal  @db.Decimal(10, 2)  // added to amountOwed on 1st of month
   amountOwed  Decimal  @default(0) @db.Decimal(10, 2)  // updated when payments are submitted
+  unit        String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

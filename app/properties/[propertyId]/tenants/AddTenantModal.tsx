@@ -13,6 +13,7 @@ type TenantRow = {
   firstName: string;
   lastName: string;
   rentAmount: string;
+  unit?: string;
 };
 
 export default function AddTenantModal({ propertyId }: { propertyId: string }) {
@@ -21,17 +22,20 @@ export default function AddTenantModal({ propertyId }: { propertyId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [tenants, setTenants] = useState<TenantRow[]>([
-    { firstName: "", lastName: "", rentAmount: "" },
+    { firstName: "", lastName: "", rentAmount: "", unit: "" },
   ]);
 
   function handleClose() {
     setOpen(false);
     setError(null);
-    setTenants([{ firstName: "", lastName: "", rentAmount: "" }]);
+    setTenants([{ firstName: "", lastName: "", rentAmount: "", unit: "" }]);
   }
 
   function addRow() {
-    setTenants((t) => [...t, { firstName: "", lastName: "", rentAmount: "" }]);
+    setTenants((t) => [
+      ...t,
+      { firstName: "", lastName: "", rentAmount: "", unit: "" },
+    ]);
   }
 
   function removeRow(index: number) {
@@ -49,19 +53,13 @@ export default function AddTenantModal({ propertyId }: { propertyId: string }) {
     e.preventDefault();
     setError(null);
     // Send all rows; only omit rows that are completely empty (placeholder rows).
-    const payload = tenants
-      .map((t) => ({
-        firstName: t.firstName.trim(),
-        lastName: t.lastName.trim(),
-        rentAmount:
-          t.rentAmount.trim() === "" ? undefined : Number(t.rentAmount),
-      }))
-      .filter(
-        (t) =>
-          t.firstName !== "" ||
-          t.lastName !== "" ||
-          (t.rentAmount !== undefined && !Number.isNaN(t.rentAmount)),
-      );
+    const payload = tenants.map((t) => ({
+      firstName: t.firstName.trim(),
+      lastName: t.lastName.trim(),
+      rentAmount: t.rentAmount.trim() === "" ? undefined : Number(t.rentAmount),
+      unit: t.unit?.trim(),
+    }));
+
     if (payload.length === 0) {
       setError(
         "Add at least one tenant with first name, last name, and a valid rent amount.",
@@ -161,22 +159,36 @@ export default function AddTenantModal({ propertyId }: { propertyId: string }) {
                     />
                   </label>
                 </div>
-                <label className="flex flex-col gap-1.5">
-                  <span className="text-sm font-medium text-foreground/90">
-                    Rent amount
-                  </span>
-                  <input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={row.rentAmount}
-                    onChange={(e) =>
-                      updateRow(index, "rentAmount", e.target.value)
-                    }
-                    placeholder="0.00"
-                    className={inputClass}
-                  />
-                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <label className="flex flex-col gap-1.5">
+                    <span className="text-sm font-medium text-foreground/90">
+                      Rent amount
+                    </span>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={row.rentAmount}
+                      onChange={(e) =>
+                        updateRow(index, "rentAmount", e.target.value)
+                      }
+                      placeholder="0.00"
+                      className={inputClass}
+                    />
+                  </label>
+                  <label className="flex flex-col gap-1.5">
+                    <span className="text-sm font-medium text-foreground/90">
+                      Unit (optional)
+                    </span>
+                    <input
+                      type="text"
+                      value={row.unit}
+                      onChange={(e) => updateRow(index, "unit", e.target.value)}
+                      placeholder="e.g. 107A"
+                      className={inputClass}
+                    />
+                  </label>
+                </div>
               </div>
             ))}
           </div>

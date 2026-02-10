@@ -7,6 +7,7 @@ type TenantInput = {
   firstName?: string;
   lastName?: string;
   rentAmount?: number;
+  unit?: string;
 };
 
 export async function POST(
@@ -59,6 +60,7 @@ export async function POST(
         firstName,
         lastName,
         rentAmount: num,
+        unit: t.unit,
       };
     });
 
@@ -69,6 +71,7 @@ export async function POST(
             firstName: t.firstName,
             lastName: t.lastName,
             rentAmount: t.rentAmount,
+            unit: t.unit || null,
             propertyId,
           },
         }),
